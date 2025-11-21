@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ Santeli | Professional DJ Services</title>
+    <meta name="description" content="Professional DJ services by DJ Santeli. Premium sound, lighting, and unforgettable experiences.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --accent: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            --ring-color: rgba(200, 180, 255, 0.9);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .cdj-loader {
+            position: relative;
+            width: 320px;
+            height: 320px;
+        }
+
+        @media (max-width: 480px) {
+            .cdj-loader {
+                width: 260px;
+                height: 260px;
+            }
+        }
+
+        /* Outer glow ring */
+        .cdj-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                rgba(180, 160, 220, 0.1) 0deg,
+                rgba(220, 200, 255, 0.95) 45deg,
+                rgba(180, 160, 220, 0.1) 90deg,
+                rgba(220, 200, 255, 0.95) 135deg,
+                rgba(180, 160, 220, 0.1) 180deg,
+                rgba(220, 200, 255, 0.95) 225deg,
+                rgba(180, 160, 220, 0.1) 270deg,
+                rgba(220, 200, 255, 0.95) 315deg,
+                rgba(180, 160, 220, 0.1) 360deg
+            );
+            animation: ringRotate 3s linear infinite;
+            filter: blur(1px);
+        }
+
+        .cdj-ring::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        @keyframes ringRotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Vinyl surface */
+        .cdj-vinyl {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center,
+                #1a1a1a 0%,
+                #0d0d0d 40%,
+                #080808 100%
+            );
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.8),
+                0 0 60px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Center label area */
+        .cdj-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45%;
+            height: 45%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, 
+                rgba(60, 60, 70, 0.9) 0%,
+                rgba(40, 40, 50, 0.95) 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .cdj-logo {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            opacity: 0.95;
+        }
+
+        /* Rotating needle/marker line */
+        .cdj-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 38%;
+            background: linear-gradient(to top, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 255, 255, 0.8) 80%,
+                rgba(255, 255, 255, 1) 100%
+            );
+            transform-origin: bottom center;
+            animation: needleRotate 2s linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes needleRotate {
+            from { transform: translate(-50%, -100%) rotate(0deg); }
+            to { transform: translate(-50%, -100%) rotate(360deg); }
+        }
+
+        /* Loading text */
+        .loader-text {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease 0.3s;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(139, 92, 246, 0.08) 0%,
+                transparent 50%
+            );
+            animation: ambientGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes ambientGlow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-5%, -5%) scale(1.1); }
+        }
+
+        .hero-logo {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.3));
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 12vw, 96px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            text-align: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(16px, 4vw, 20px);
+            font-weight: 400;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 48px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15);
+        }
+
+        .hero-cta svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-tertiary);
+            font-size: 12px;
+            letter-spacing: 2px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 120px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 80px 24px;
+            }
+        }
+
+        .section-label {
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .section-description {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 64px;
+        }
+
+        /* Equipment Grid */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .equipment-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .equipment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(139, 92, 246, 0.5),
+                transparent
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .equipment-card:hover::before {
+            opacity: 1;
+        }
+
+        .equipment-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.15);
+            border-radius: 16px;
+        }
+
+        .equipment-icon svg {
+            width: 28px;
+            height: 28px;
+            color: var(--accent);
+        }
+
+        .equipment-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .equipment-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Experience Section */
+        .experience-section {
+            text-align: center;
+            background: linear-gradient(180deg, 
+                var(--bg-primary) 0%,
+                var(--bg-secondary) 50%,
+                var(--bg-primary) 100%
+            );
+        }
+
+        .experience-number {
+            font-size: clamp(80px, 20vw, 160px);
+            font-weight: 700;
+            background: linear-gradient(135deg, 
+                var(--text-primary) 0%,
+                var(--accent) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .experience-label {
+            font-size: clamp(20px, 4vw, 28px);
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            text-align: center;
+            padding-bottom: 160px;
+        }
+
+        .instagram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 24px 48px;
+            background: linear-gradient(135deg, 
+                #833ab4 0%,
+                #fd1d1d 50%,
+                #fcb045 100%
+            );
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            border-radius: 100px;
+            transition: all 0.4s ease;
+            box-shadow: 0 20px 40px rgba(131, 58, 180, 0.3);
+        }
+
+        .instagram-link:hover {
+            transform: scale(1.05) translateY(-4px);
+            box-shadow: 0 30px 60px rgba(131, 58, 180, 0.4);
+        }
+
+        .instagram-link svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .contact-note {
+            margin-top: 32px;
+            font-size: 15px;
+            color: var(--text-tertiary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        /* Animations on scroll */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom cursor glow effect */
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, 
+                rgba(139, 92, 246, 0.1) 0%,
+                transparent 70%
+            );
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .cursor-glow {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="cdj-loader">
+            <div class="cdj-ring"></div>
+            <div class="cdj-vinyl"></div>
+            <div class="cdj-needle"></div>
+            <div class="cdj-center">
+                <img src="Santeli.png" alt="Santeli Logo" class="cdj-logo" onerror="this.src='Santeli_placeholder.svg'">
+            </div>
+        </div>
+        <span class="loader-text">Loading</span>
+    </div>
+
+    <!-- Cursor Glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-logo">
+                <img src="Santeli.png" alt="DJ Santeli Logo" onerror="this.src='Santeli_placeholder.svg'">
+            </div>
+            <h1 class="hero-title">DJ Santeli</h1>
+            <p class="hero-subtitle">Premium Sound. Unforgettable Nights.</p>
+            <a href="https://instagram.com/dj.santeli" target="_blank" class="hero-cta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                Book Now
+            </a>
+            <div class="scroll-indicator">
+                <span>Scroll</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Equipment Section -->
+        <section id="equipment">
+            <span class="section-label fade-in">The Setup</span>
+            <h2 class="section-title fade-in">Professional Grade<br>Equipment</h2>
+            <p class="section-description fade-in">Every event deserves exceptional sound and lighting. My setup ensures your venue sounds incredible and looks stunning.</p>
+            
+            <div class="equipment-grid">
+                <div class="equipment-card fade-in">
+                    <div class="equipment-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="4" y="2" width="16" height="20" rx="2"/>
+                            <circle cx="12" cy="14" r="4"/>
+                            <line x1="12" y1="6" x2="12" y2="6.01"/>
+                        </svg>
+                    </div>
+                    <h3 class="equipment-title">2× QSC Speakers</h3>
+                    <p class="equipment-description">Industry-leading powered loudspeakers delivering crystal-clear audio with powerful bass response. Perfect for venues of any size.</p>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="6" width="20" height="12" rx="2"/>
+                            <circle cx="8" cy="12" r="2"/>
+                            <circle cx="16" cy="12" r="2"/>
+                            <line x1="11" y1="10" x2="13" y2="10"/>
+                            <line x1="11" y1="14" x2="13" y2="14"/>
+                        </svg>
+                    </div>
+                    <h3 class="equipment-title">FLX 10 DJ Controller</h3>
+                    <p class="equipment-description">Professional-grade controller with precision jog wheels, seamless mixing capabilities, and intuitive performance features.</p>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                    </div>
+                    <h3 class="equipment-title">Professional Microphone</h3>
+                    <p class="equipment-description">High-quality wireless microphone system for crystal-clear announcements, speeches, and live vocals.</p>
+                </div>
+
+                <div class="equipment-card fade-in">
+                    <div class="equipment-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="equipment-title">DMX Lighting System</h3>
+                    <p class="equipment-description">Complete lighting rig featuring 6 RGB par lights, 2 moving head lights, and MIDI controller for fully synchronized light shows.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="experience-section">
+            <span class="section-label fade-in">Experience</span>
+            <div class="experience-number fade-in">2+</div>
+            <p class="experience-label fade-in">Years of Professional Experience</p>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contact">
+            <span class="section-label fade-in">Let's Work Together</span>
+            <h2 class="section-title fade-in">Ready to elevate<br>your event?</h2>
+            <p class="section-description fade-in" style="margin-left: auto; margin-right: auto;">Get in touch for bookings and inquiries. Let's create an unforgettable experience together.</p>
+            
+            <a href="https://instagram.com/dj.santeli" target="_blank" class="instagram-link fade-in">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                </svg>
+                @dj.santeli
+            </a>
+            <p class="contact-note fade-in">DM for inquiries and bookings</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-text">© 2025 DJ Santeli. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('mainContent').classList.add('visible');
+            }, 2500);
+        });
+
+        // Cursor Glow Effect
+        const cursorGlow = document.getElementById('cursorGlow');
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
+
+        // Scroll Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
